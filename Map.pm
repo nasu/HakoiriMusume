@@ -1,8 +1,9 @@
 package Map;
 use strict;
 use parent qw/Clone/;
-use Conf;
+use feature qw/switch/;
 use List::AllUtils qw/any/;
+use Conf;
 sub new {
     my ($class, $map) = @_;
     return bless +[@$map], $class;
@@ -35,7 +36,32 @@ sub snapshot {
 sub flatten {
     my ($self) = @_;
     my $flat;
-    $flat .= join('', grep {$_ ne +W && $_ ne +S} @$_) for @$self;
+    my %mapping;
+    for (my $i=0,my $im=scalar @$self; $i<$im; $i++) {
+        for (my $j=0,my $jm=scalar @{$self->[$i]}; $j<$jm; $j++) {
+            my $p = $self->[$i]->[$j];
+            next if any {$p eq $_} +(+W, +S, +E, '0');
+            given ($mapping{$p}) {
+            when ('A') {
+                my $dot = Dot->new($i,$j);
+                my @same = $self->same($dot);
+                given (scalar @same) {
+                when (1) {
+                    given ($same[0] - $dot) {
+                    when (+[+LEFT, +RIGHT]) {$mapping{$p} = 'B'}
+                    when (+[+TOP, +BOTTOM]) {$mapping{$p} = 'C'}
+                    }
+                }
+                }
+            }
+            when (undef) {$mapping{$p} = 'A'}
+            }
+        }
+    }
+    $flat .= join('', map {
+        $mapping{$_} || $_
+    } grep {$_ ne +W && $_ ne +S} @$_) for @$self;
+    #print $flat . "\n";
     return $flat;
 }
 

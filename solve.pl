@@ -20,7 +20,7 @@ sub solve {
     SOLVE: while (1) {
         my $cur = shift @queue;
         my ($map, $path) = ($cur->{map}, $cur->{path});
-        print scalar(@$path) . "@" . scalar(@queue) . "\n";
+        #print scalar(@$path) . "@" . scalar(@queue) . "\n";
         #$map->snapshot;
         #use Data::Dump; dd %memo;
         #sleep(0.3);

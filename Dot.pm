@@ -5,6 +5,7 @@ use overload
     '-' => \&sub,
     '==' => \&eq,
     '""' => \&str,
+    '~~' => \&any,
 ;
 sub new {
     my ($class, $x, $y) = @_;
@@ -28,4 +29,6 @@ sub str {
     my ($self) = @_;
     return $self;
 }
+*any = \&eq;
+
 1;
