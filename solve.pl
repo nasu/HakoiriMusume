@@ -1,5 +1,4 @@
 #!/usr/bin/env perl
-# usage: perl solve.pl < input
 use strict;
 use lib qw/./;
 use Data::Dump;
